@@ -22,6 +22,11 @@ class LocalVectorStore:
             query_embeddings=query_embeddings,
             n_results=n_results
         )
+    def conditional_query(self,filter:dict, n_results: int = 5):
+        return self.collection.get(
+            n_results=n_results , 
+            where=dict
+            ) 
 
 # Singleton instance
 vector_store = LocalVectorStore()

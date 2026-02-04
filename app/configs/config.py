@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import Optional
+from app.configs.configs_agentic import AgenticSettings
+from app.configs.vetore_store_configs import VectorStoreSettings
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Robust Starter"
@@ -13,6 +14,11 @@ class Settings(BaseSettings):
     SECRET_KEY: str = "development_secret_key_change_me"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+
+    # Nested Configs
+    agentic: AgenticSettings = AgenticSettings()
+    vector_store: VectorStoreSettings = VectorStoreSettings()
+    
     
     model_config = SettingsConfigDict(
         env_file=".env", 

@@ -50,6 +50,12 @@ class VectorStoreService:
             query_embeddings=[query_embedding],
             n_results=n_results
         )
-
+    @staticmethod
+    def conditional_search(filter:dict, n_results: int = 5):
+        """Search the vector store for similar documents."""
+        return vector_store.conditional_query(
+            filter=filter,
+            n_results=n_results
+        )
 # Export as a service instance or just the class
 vs_service = VectorStoreService()

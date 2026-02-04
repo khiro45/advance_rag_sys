@@ -12,3 +12,7 @@ pytest
 httpx
 chromadb
 sentence-transformers
+langchain
+langchain-openai
+langgraph
+langchain-google-genai
