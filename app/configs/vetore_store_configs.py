@@ -3,7 +3,7 @@ import os
 
 class VectorStoreSettings(BaseSettings):
     # Vector DB Settings
-    VECTOR_DB_PATH: str = os.path.join(os.getcwd(), "vector_db")
+    VECTOR_DB_PATH: str = 'app/services/rag_sys/vectore_store/vectore_db'
     COLLECTION_NAME: str = "main_collection"
     
     # Embedding Model Settings
