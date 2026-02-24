@@ -1,23 +1,36 @@
 from abc import ABC, abstractmethod
 
-processors_lits={
-    
-}
 
-class Docs_processor(ABC):
+class BaseDocProcessor(ABC):
 
-    def __init__(self):
+    @abstractmethod
+    def load_doc(self , docs:str , meta_data:dict):
+        """Steps to load docs"""
+        pass
+    @abstractmethod
+    def process_doc(self , docs:str , meta_data:dict):
+        """Steps to clean or extract text"""
+        pass
+    @abstractmethod
+    def chunk_docs(self , docs:str , meta_data:str):
+        """Steps to chunk docs"""
         pass
 
-    def process_docs(self , docs:list[str] , meta_data:list[dict]):
-        pass
+    def run_pipline(self, docs: list[str], meta_data: list[dict]):
+        processed = self.process_docs(docs, meta_data)
+        chunks = self.chunk_docs(processed, meta_data)
 
-    def chunk_docs(self , docs:list[str] , meta_data:list[dict]):
-        pass
+class ProcessorFactory:
+    _processors = {
+        # "pdf": PDFProcessor,
+        # "md": MarkdownProcessor,
+        # "txt": MarkdownProcessor 
+    }
 
-    def run_processor(self , processor_type:str):
-        doc_processor=processors_lits.get(processor_type)
-        if doc_processor:
-            return doc_processor()
-        else:
-            raise ValueError("processor type not found")
+    @staticmethod
+    def get_processor(processor_type: str) -> BaseDocProcessor:
+        processor_class = ProcessorFactory._processors.get(processor_type.lower())
+        if not processor_class:
+            raise ValueError(f"No processor found for type: {processor_type}")
+        
+        return processor_class()

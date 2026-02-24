@@ -10,6 +10,10 @@ class VectorStoreSettings(BaseSettings):
     EMBEDDING_MODEL_NAME: str = "all-MiniLM-L6-v2"
     DEVICE: str = "cpu" # or "cuda" if available
     
+    # Cross Encoder Settings
+    CROSS_ENCODER_MODEL_NAME: str = "cross-encoder/msmarco-MiniLM-L-6-v2"
+    CROSS_ENCODER_MODEL_PATH: str = "app/services/rag_sys/vectore_store/cross_encoder"
+    
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore",
