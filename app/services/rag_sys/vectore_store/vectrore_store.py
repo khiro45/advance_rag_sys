@@ -39,8 +39,7 @@ class Vectore_store():
             print('num of docs : ' , len(docs))
 
             for i, doc in enumerate(docs):
-                print("adding doc ::" , i)
-                
+                print("adding doc ::" , i)                
                 embading=self.embedding_model.encode(doc)
                 self.add_document(doc , embading , meta_data[doc])
         else:
