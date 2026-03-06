@@ -26,6 +26,8 @@ wheels/
 app/services/rag_sys/vector_store/embedding_model/*
 app/services/rag_sys/vector_store/cross_encoder/*
 app/services/rag_sys/vector_store/vector_db/*
+app/services/rag_sys/vector_store/cross_encoder/*
+
 !**/ .gitkeep
 
 # DB
