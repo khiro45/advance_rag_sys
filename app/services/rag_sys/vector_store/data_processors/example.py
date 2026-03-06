@@ -1,4 +1,4 @@
-from app.services.rag_sys.vectore_store.data_processing import BaseDocProcessor
+from app.services.rag_sys.vector_store.data_processing import BaseDocProcessor
 class PDFProcessor(BaseDocProcessor):
     def process_docs(self, docs, meta_data):
         print("Processing PDF specific logic...")

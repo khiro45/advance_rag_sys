@@ -22,6 +22,15 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+# Models and Data
+app/services/rag_sys/vector_store/embedding_model/*
+app/services/rag_sys/vector_store/cross_encoder/*
+app/services/rag_sys/vector_store/vector_db/*
+!**/ .gitkeep
+
+# DB
+*.db
+.db
 
 # IDE
 .vscode/

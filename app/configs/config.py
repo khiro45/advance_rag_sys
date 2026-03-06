@@ -1,6 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from app.configs.configs_agentic import AgenticSettings
-from app.configs.vetore_store_configs import VectorStoreSettings
+from app.configs.vector_store_configs import VectorStoreSettings
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "FastAPI Robust Starter"

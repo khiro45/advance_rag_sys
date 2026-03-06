@@ -1,8 +1,8 @@
 from sentence_transformers import SentenceTransformer
 import os
 from app.configs.config import settings
-class EmbeddingModel:
-    def __init__(self, model_name: str, save_path: str=settings.EMBEDDING_MODEL_PATH):
+class Embedding_model:
+    def __init__(self, model_name: str, save_path: str = settings.vector_store.EMBEDDING_MODEL_PATH):
         self.model_name = model_name
         self.save_path = save_path
         self.model = self._load_or_download()

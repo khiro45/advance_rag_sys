@@ -1,12 +1,5 @@
+from app.services.agentic.base import prompt_manager
 
-propmpts_dir = "app/services/agentic/core/propmt_templates/"
-
-def propmt_loader(propmt_name:str , propmt_args:dict):
-
-    with open(f"{propmpts_dir}{propmt_name}.md", 'r') as f:
-        propmt_template = f.read()
-
-    for key, value in propmt_args.items():
-        propmt_template = propmt_template.replace(f"{{{key}}}", str(value))
-
-    return propmt_template
+def prompt_loader(agent_name: str, prompt_name: str, prompt_args: dict = None):
+    """Bridge for the legacy prompt_loader using the new prompt_manager."""
+    return prompt_manager.load_prompt(agent_name, prompt_name, prompt_args)
