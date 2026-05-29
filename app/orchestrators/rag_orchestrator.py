@@ -4,7 +4,7 @@ from app.services.rag_sys.vector_store.vector_store import VectorStore
 from app.services.rag_sys.vector_store.embedding_model import Embedding_model
 from app.services.rag_sys.vector_store.data_processing import ProcessorFactory
 from app.configs.config import settings
-
+from fastapi import File
 class RagOrchestrator:
     def __init__(self):
         # Initialize Vector Store with its dependencies
@@ -63,11 +63,11 @@ class RagOrchestrator:
         
         return final_response["messages"][-1].content
 
-    def ingest_documents(self, documents: list[str], metadata: list[dict]):
+    def ingest_documents(self, document: File):
         """Ingests documents into the vector store."""
         # Ensure metadata is provided for each document
         if not metadata:
-            metadata = [{}] * len(documents)
+            metadata = [{}] * len(document)
             
-        self.vector_store.seed_data(documents, metadata)
-        return {"status": "success", "count": len(documents)}
+        self.vector_store.seed_data(document, metadata)
+        return {"status": "success", "count": len(document)}

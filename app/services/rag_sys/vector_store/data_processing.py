@@ -1,22 +1,23 @@
 from abc import ABC, abstractmethod
-
+from fastapi import File
 
 class BaseDocProcessor(ABC):
 
     @abstractmethod
-    def load_doc(self , docs:str , meta_data:dict):
+    def load_doc(self , docs:File , meta_data:dict):
         """Steps to load docs"""
         pass
     @abstractmethod
-    def process_doc(self , docs:str , meta_data:dict):
+    def process_doc(self , docs:File , meta_data:dict):
         """Steps to clean or extract text"""
         pass
     @abstractmethod
-    def chunk_docs(self , docs:str , meta_data:str):
+    def chunk_docs(self , docs:File , meta_data:str):
         """Steps to chunk docs"""
         pass
-
-    def run_pipline(self, docs: list[str], meta_data: list[dict]):
+    
+    @abstractmethod
+    def run_pipline(self, docs:File, meta_data: dict):
         processed = self.process_docs(docs, meta_data)
         chunks = self.chunk_docs(processed, meta_data)
 

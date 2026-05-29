@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db import get_db
 from app.schemas.user import User, UserCreate
-# from app.crud.user import crud_user (to be created)
 
 router = APIRouter()
 

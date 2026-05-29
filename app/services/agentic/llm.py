@@ -1,5 +1,5 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import ChatPromptTemplate
+
 import os 
 from  dotenv import load_dotenv 
 from app.configs.config import settings
