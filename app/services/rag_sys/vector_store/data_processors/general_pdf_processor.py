@@ -21,6 +21,11 @@ class GneralPDFProcessor(BaseDocProcessor):
         return texts , meta_data
 
 
+    def process_doc(self):
+        pass
+    
+    def chunk_docs(self) :
+        pass
 
-    def run_pipline(self, file:File, meta_data:BaseMetaData):
+    def run_pipeline(self, file:File, meta_data:BaseMetaData):
         return self.load_doc(file  , meta_data)

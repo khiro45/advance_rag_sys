@@ -1,18 +1,35 @@
-from app.services.rag_sys.vector_store.data_processing import BaseDocProcessor
-class PDFProcessor(BaseDocProcessor):
-    def process_docs(self, docs, meta_data):
-        print("Processing PDF specific logic...")
-        return [doc.strip().lower() for doc in docs]
+from app.services.rag_sys.vector_store.base_processor import BaseDocProcessor
 
-    def chunk_docs(self, docs, meta_data):
+class PDFProcessor(BaseDocProcessor):
+    async def load_doc(self, file, meta_data):
+        return ["example pdf content"], meta_data
+
+    def process_doc(self, texts, meta_data):
+        print("Processing PDF specific logic...")
+        return [doc.strip().lower() for doc in texts], meta_data
+
+    def chunk_docs(self, texts, meta_data):
         print("Chunking PDF into 500-token blocks...")
-        return docs # logic here
+        chunks = []
+        chunk_metadatas = []
+        for i, text in enumerate(texts):
+            chunks.append(text)
+            chunk_metadatas.append({"source": meta_data.source or "", "chunk_index": i})
+        return chunks, chunk_metadatas
 
 class MarkdownProcessor(BaseDocProcessor):
-    def process_docs(self, docs, meta_data):
-        print("Removing Markdown headers and links...")
-        return docs 
+    async def load_doc(self, file, meta_data):
+        return ["example md content"], meta_data
 
-    def chunk_docs(self, docs, meta_data):
+    def process_doc(self, texts, meta_data):
+        print("Removing Markdown headers and links...")
+        return texts, meta_data
+
+    def chunk_docs(self, texts, meta_data):
         print("Chunking Markdown by Headers...")
-        return docs
+        chunks = []
+        chunk_metadatas = []
+        for i, text in enumerate(texts):
+            chunks.append(text)
+            chunk_metadatas.append({"source": meta_data.source or "", "chunk_index": i})
+        return chunks, chunk_metadatas

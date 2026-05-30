@@ -4,8 +4,9 @@ from datetime import datetime
 
 
 class BaseMetaData(BaseModel):
+    processor_type:str
     source:str
     date:datetime
     title:str
-    tags:List[str]
-    keywords:list[str]
+    tags:List[str]| None
+    keywords:list[str]|None

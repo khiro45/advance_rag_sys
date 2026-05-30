@@ -3,25 +3,23 @@ from app.services.agentic.workflows.question_response_agent.graph import questio
 from app.services.rag_sys.vector_store.vector_store import VectorStore
 from app.services.rag_sys.vector_store.embedding_model import Embedding_model
 from app.services.rag_sys.vector_store.data_processing import ProcessorFactory
+from app.services.rag_sys.schemas import BaseMetaData
+
 from app.configs.config import settings
-from fastapi import File
+from fastapi import UploadFile, HTTPException
+from datetime import datetime, timezone
+
 class RagOrchestrator:
     def __init__(self):
-        # Initialize Vector Store with its dependencies
+        # Initialize dependencies
         self.embedding_model = lambda: Embedding_model(model_name=settings.vector_store.EMBEDDING_MODEL_NAME)
+        self.data_processor: ProcessorFactory = ProcessorFactory()
         self.vector_store = VectorStore(
             embedding_model=self.embedding_model,
-            data_processor=ProcessorFactory
+            data_processor=self.data_processor
         )
 
-    def process_query(self, user_query: str):
-        """
-        Executes the full RAG pipeline:
-        1. Sub-query expansion
-        2. Vector retrieval for each sub-query
-        3. Reranking of results
-        4. Final response generation
-        """
+    async def process_query(self, user_query: str):
         print(f"Starting RAG pipeline for query: {user_query}")
 
         # Step 1: Sub-query expansion
@@ -31,13 +29,10 @@ class RagOrchestrator:
         
         if not sub_queries:
             sub_queries = [user_query]
-            
-        print(f"Expanded into sub-queries: {sub_queries}")
 
-        # Step 2: Vector retrieval
         all_docs = []
         for query in sub_queries:
-            results = self.vector_store.get_document(query, n_results=5)
+            results = await self.vector_store.get_document(query, n_results=5)
             # results['documents'] is a list of lists (one list per query_text)
             if results and results.get("documents"):
                 for doc in results["documents"][0]:
@@ -59,15 +54,33 @@ class RagOrchestrator:
             "messages": [{"role": "user", "content": user_query}],
             "docs": final_context_docs
         }
-        final_response = question_response_agent.invoke(response_state)
+        final_response = await question_response_agent.invoke(response_state)
         
         return final_response["messages"][-1].content
 
-    def ingest_documents(self, document: File):
-        """Ingests documents into the vector store."""
-        # Ensure metadata is provided for each document
-        if not metadata:
-            metadata = [{}] * len(document)
-            
-        self.vector_store.seed_data(document, metadata)
-        return {"status": "success", "count": len(document)}
+    async def ingest_documents(self, file: UploadFile, processing_type: str ):
+
+        if not processing_type:
+                raise HTTPException(
+                    status_code=400, 
+                    detail=f"Undefiend processing  format. {processing_type}"
+                )
+
+        processor = self.data_processor.get_processor(processing_type)
+        
+        meta_data = BaseMetaData(
+            source=file.filename ,
+            processor_type=processing_type , 
+            date=datetime.now(timezone.utc),
+            title=(file.filename ),
+            tags=[],
+            keywords=[]
+        )
+        
+        # Run async parsing, cleaning and chunking pipeline
+        text_chunks, chunk_metadatas = await processor.run_pipeline(file, meta_data)
+        
+        # Seed the chunks into the vector store
+        self.vector_store.add_document(text_chunks, chunk_metadatas)
+        
+        return {"status": "success", "count": len(text_chunks)}

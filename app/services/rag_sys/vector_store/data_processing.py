@@ -1,31 +1,18 @@
-from abc import ABC, abstractmethod
-from fastapi import File
+from app.services.rag_sys.vector_store.base_processor import BaseDocProcessor
+from app.services.rag_sys.vector_store.data_processors.general_pdf_processor import GneralPDFProcessor
+from pydantic import BaseModel
+from enum import Enum
 
-class BaseDocProcessor(ABC):
 
-    @abstractmethod
-    def load_doc(self , docs:File , meta_data:dict):
-        """Steps to load docs"""
-        pass
-    @abstractmethod
-    def process_doc(self , docs:File , meta_data:dict):
-        """Steps to clean or extract text"""
-        pass
-    @abstractmethod
-    def chunk_docs(self , docs:File , meta_data:str):
-        """Steps to chunk docs"""
-        pass
-    
-    @abstractmethod
-    def run_pipline(self, docs:File, meta_data: dict):
-        processed = self.process_docs(docs, meta_data)
-        chunks = self.chunk_docs(processed, meta_data)
+
+class ProcessorType(str, Enum):
+    PDF = "pdf"
+
+
 
 class ProcessorFactory:
     _processors = {
-        # "pdf": PDFProcessor,
-        # "md": MarkdownProcessor,
-        # "txt": MarkdownProcessor 
+        "pdf": GneralPDFProcessor,
     }
 
     @staticmethod
