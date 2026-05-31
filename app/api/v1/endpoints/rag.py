@@ -9,9 +9,6 @@ orchestrator = RagOrchestrator()
 
 @router.post("/query")
 async def query_rag(request: RagQueryRequest):
-    """
-    Endpoint to process a RAG query through the full pipeline.
-    """
     try:
         answer = await  orchestrator.process_query(request.query)
         return RagQueryResponse(answer=answer)
@@ -21,7 +18,10 @@ async def query_rag(request: RagQueryRequest):
 
 @router.post('/Chat')
 async def chat(req:ChatInput ):
-    pass
+    try:
+        responce = await orchestrator.chat(input_text , session_id )
+    except Exception as e :
+        raise HTTPException(status_code=500 , detail=str(e))
 
 
 @router.post("/ingest")

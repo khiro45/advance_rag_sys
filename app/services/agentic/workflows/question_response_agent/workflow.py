@@ -1,21 +1,22 @@
 from app.services.agentic.llm import llm
 from .state import QuestionResponseState
+from app.services.agentic.core import prompt_loader
+from state import SubQuery 
 
 
-def chatbot(state: QuestionResponseState):
-    """Simple chatbot node that uses retrieved context to answer the user query."""
-    messages = state["messages"]
-    docs = state.get("docs", [])
+def create_sub_queries(state: QuestionResponseState) -> QuestionResponseState:
+    query = state["user_query"]
+    prompt = prompt_loader("sub_queries_agent", {"query": query})
+    structured_output = llm.with_structured_output(list[SubQuery])
+    sub_queries = structured_output.invoke(prompt)
+    return {"user_query": query, "sub_queries": sub_queries}
+
+
+def chatbot(state: QuestionResponseState) -> QuestionResponseState:
+    message = state["message"]
+    docs = state['docs']
     
-    context = "\n\n".join([doc.get("doc", str(doc)) for doc in docs])
-    
-    system_message = {
-        "role": "system",
-        "content": f"You are a helpful RAG assistant. Answer the user question based ONLY on the following context:\n\n{context}"
-    }
-    
-    # Prepend system message to conversation history
-    full_messages = [system_message] + list(messages)
-    
-    response = llm.invoke(full_messages)
-    return {"messages": [response]}
+    prompt = prompt_loader("question_answering_agent", {"docs": docs , "message":message})
+    response = llm.invoke(prompt)
+    return {"message reponce": [response]}  
+   

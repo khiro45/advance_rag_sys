@@ -19,7 +19,10 @@ class Settings(BaseSettings):
     agentic: AgenticSettings = AgenticSettings()
     vector_store: VectorStoreSettings = VectorStoreSettings()
     
-    
+    mlflow_tracking :bool = True
+    mlflow_tracking_uri :str = "http://127.0.0.1:5000"
+
+
     model_config = SettingsConfigDict(
         env_file=".env", 
         case_sensitive=True,

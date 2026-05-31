@@ -1,4 +1,3 @@
-from app.services.agentic.workflows.sub_queries_agent.graph import sub_queries_agent
 from app.services.agentic.workflows.question_response_agent.graph import question_response_agent
 from app.services.rag_sys.vector_store.vector_store import VectorStore
 from app.services.rag_sys.vector_store.embedding_model import Embedding_model
@@ -18,6 +17,19 @@ class RagOrchestrator:
             embedding_model=self.embedding_model,
             data_processor=self.data_processor
         )
+        if settings.mlflow_tracking :
+            self.init_mlflow_tracker()
+           
+
+    def init_mlflow_tracker(self  ,experiment_name:str  = "Gemini_Agent_Experiments" ):
+        import mlflow
+        import mlflow.langchain
+
+
+        mlflow.set_tracking_uri(settings.mlflow_tracking_uri)
+        mlflow.set_experiment(experiment_name)
+        mlflow.langchain.autolog(run_tracer_inline=True)
+
 
     async def process_query(self, user_query: str):
         print(f"Starting RAG pipeline for query: {user_query}")
@@ -77,10 +89,10 @@ class RagOrchestrator:
             keywords=[]
         )
         
-        # Run async parsing, cleaning and chunking pipeline
         text_chunks, chunk_metadatas = await processor.run_pipeline(file, meta_data)
         
         # Seed the chunks into the vector store
         self.vector_store.add_document(text_chunks, chunk_metadatas)
         
         return {"status": "success", "count": len(text_chunks)}
+
